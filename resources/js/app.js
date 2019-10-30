@@ -9,12 +9,17 @@ require('./bootstrap');
 // window.Vue = require('vue');
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+// import Axios from 'axios';
 
 Vue.use(VueRouter)
 
-import App from './components/App'
-import Hello from './components/Hello'
-import Home from './components/Home'
+import App from './views/App'
+import Hello from './views/Hello'
+import Home from './views/Home'
+import UsersIndex from './views/UsersIndex'
+import UsersEdit from './views/UsersEdit'
+
+
 
 const router = new VueRouter({
     mode: 'history',
@@ -29,8 +34,19 @@ const router = new VueRouter({
             name: 'hello',
             component: Hello
         },
+        {
+            path: '/users',
+            name: 'users.index',
+            component: UsersIndex,
+        },
+        {
+            path: '/users/:id/edit',
+            name: 'users.edit',
+            component: UsersEdit,
+        },
     ],
 });
+
 
 /**
  * The following block of code may be used to automatically register your
