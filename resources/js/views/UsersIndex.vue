@@ -4,6 +4,10 @@
             Loading...
         </div> -->
 
+        <div>
+            <router-link :to="{ name: 'users.create' }">Add user</router-link>
+        </div>
+
         <div v-if="error" class="error">
             {{ error }}
 
@@ -63,13 +67,13 @@ export default {
     },
     computed:{
         nextPage(){
-            if(! this.meta || this.meta.current_page === this.meta.last_page){
+            if(! this.meta || this.meta.current_page >= this.meta.last_page){
                 return;
             }
             return this.meta.current_page + 1;
         },
         prevPage(){
-            if(! this.meta || this.meta.current_page === 1){
+            if(! this.meta || this.meta.current_page <= 1){
                 return;
             }
             return this.meta.current_page - 1;

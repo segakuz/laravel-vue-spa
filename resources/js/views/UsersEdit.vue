@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div v-if="error" class="error alert">
+            {{ error }}
+        </div>
         <div v-if="message" class="alert">{{ message }}</div>
         <div v-if="! loaded">Loading...</div>
         <form v-else @submit.prevent="onSubmit($event)">
@@ -13,6 +16,7 @@
             </div>
             <div class="form-group">
                 <button type="submit" :disabled="saving">Update</button>
+                <button :disabled="saving" @click.prevent="onDelete($event)">Delete</button>
             </div>
         </form>
         <p>
@@ -33,7 +37,8 @@ import Api from '../api/users';
                     id: null,
                     name: "",
                     email: ""
-                }
+                },
+                error: null
             };
         },
         methods: {
@@ -45,6 +50,7 @@ import Api from '../api/users';
                     name: this.user.name,
                     email: this.user.email,
                 }).then(response => {
+                    this.error = null;
                     this.message = 'User updated';
                     setTimeout(() => {
                         this.$router.go(-1);
@@ -53,11 +59,27 @@ import Api from '../api/users';
                     , 2000);
                     this.user = response.data.data;
                 }).catch(error => {
-                    console.log(error);
+                    // console.log(error);
+                    this.error = error.response.data.message || error.message;
                 }).then(_ => this.saving = false);
             },
+            onDelete(){
+                this.saving = true;
+                Api.delete(this.user.id)
+                    .then(response => {
+                        console.log(response);
+                        this.message = 'User deleted';
+                        setTimeout(() => {
+                            this.$router.go(-1);
+                            // this.$router.push({ name: 'users.index' });
+                            this.message = null;
+                        }
+                        , 2000);
+                    });
+            },
             goBack(){
-                this.$router.go(-1);
+                // this.$router.go(-1);
+                this.$router.push({ name: 'users.index' });
             }
         },
         created() {
@@ -66,6 +88,9 @@ import Api from '../api/users';
                 .then(response => {
                     this.loaded = true;
                     this.user = response.data.data;
+                })
+                .catch(err => {
+                    this.$router.push({name: '404'});
                 });
         }
     };
